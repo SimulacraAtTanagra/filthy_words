@@ -43,3 +43,5 @@ def extend_relatives(data):
   The resulting list of words includes words/phrases and pseudowords/phrases involving pseudowords that may nevertheless appear in conversations, such as "casting couchish" or "blumpkinery" or "cleveland steamerers". However, there is a ton of nonsense garbage, such as "sasquatchdd" and "fugleyedd". 
   
   Nevertheless, I think this is a great starting point for anyone looking to use this data to help in efforts such as nsfw model training. 
+  
+  Please note that the vulgar words text file doesn't include the permutations. You can genreate them using the code above if needed. 
