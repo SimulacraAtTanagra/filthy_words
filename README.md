@@ -9,36 +9,54 @@ Step 1) Find collections of dirty words that are cleanly formatted:
 
 Step 2) Find collections of dirrty words that are formatted all wrong:
   Jackpot!
+
   Found an nsfw filter that included a lot of sex acts and references to bodyparts, but also sex-related historical events (2 girls 1 cup, as an example) at 
   https://github.com/uvasoftware/yara-language-nsfw/blob/main/src/en-language-nsfw.yara
+
   Found a 'dictionary' of dirty sex words here https://www.cltampa.com/news/dirty-sex-dictionary-12310282 and manually scraped
 
 Step 3) clean data
   For the program, this was absurdly easy. Used regular expressions to remove all quoted things from each line. Throwaway code for that was this:
 
-def extract_quotes(text):
-	import re
-	pattern = r'"(.+?)"'
-	m = re.findall(pattern, text)
-	return(m)
+	def extract_quotes(text):
+	
+		import re
+	 
+		pattern = r'"(.+?)"'
+	 
+		m = re.findall(pattern, text)
+	 
+		return(m)
 
 For the dictionary, it was a bit more complex, and I've uploaded the dirty_words.py file to capture what I did. 
 
 step 4) Finally I extended that list using some more throwaway code to cover permutations:
 
-suffixes=['d',"ed",'s','er','r','ing','ings','ier','ish','y']
-def find_relatives(word):
-	return([word+i for i in suffixes])
-def strip_end(word):
-	return([word[:-(len(x))] for x in suffixes if word.endswith(x)])
-def extend_relatives(data):
-	data=set(data)
-	[data.add(x) for x in data if strip_end(x)]
-	for i in range(1):
-		datalist=[find_relatives(word) for word in data]
-		for item in datalist:
-			[data.add(i) for i in item]
-	return(list(data))
+	suffixes=['d',"ed",'s','er','r','ing','ings','ier','ish','y']
+	
+	def find_relatives(word):
+	
+		return([word+i for i in suffixes])
+	 
+	def strip_end(word):
+	
+		return([word[:-(len(x))] for x in suffixes if word.endswith(x)])
+	 
+	def extend_relatives(data):
+	
+		data=set(data)
+	 
+		[data.add(x) for x in data if strip_end(x)]
+	 
+		for i in range(1):
+	 
+			datalist=[find_relatives(word) for word in data]
+	  
+			for item in datalist:
+	  
+				[data.add(i) for i in item]
+	   
+		return(list(data))
   
   The resulting list of words includes words/phrases and pseudowords/phrases involving pseudowords that may nevertheless appear in conversations, such as "casting couchish" or "blumpkinery" or "cleveland steamerers". However, there is a ton of nonsense garbage, such as "sasquatchdd" and "fugleyedd". 
   
